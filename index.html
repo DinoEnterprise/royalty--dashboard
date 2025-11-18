@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login Royalti</title>
 
+<!-- Firebase CDN COMPAT (aman untuk GitHub Pages) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -33,24 +34,32 @@ button {
 <button onclick="login()">Login</button>
 
 <script>
+// 🔥 Firebase Config Kamu (sudah aku masukan)
 const firebaseConfig = {
-  apiKey: "GANTI",
-  authDomain: "GANTI.firebaseapp.com",
-  databaseURL: "https://GANTI-default-rtdb.firebaseio.com",
-  projectId: "GANTI",
-  storageBucket: "GANTI.appspot.com",
-  messagingSenderId: "GANTI",
-  appId: "GANTI"
+  apiKey: "AIzaSyBZ_7yMUsfTM-ldDdFal4KU-bLH5QydHwo",
+  authDomain: "royalty-ca9fe.firebaseapp.com",
+  databaseURL: "https://royalty-ca9fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "royalty-ca9fe",
+  storageBucket: "royalty-ca9fe.firebasestorage.app",
+  messagingSenderId: "458176607676",
+  appId: "1:458176607676:web:59e789a591b69e6582a7b9"
 };
+
+// 🔥 Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 
+// 🔥 Login Function
 function login() {
   let email = document.getElementById("email").value;
   let password = document.getElementById("password").value;
 
   firebase.auth().signInWithEmailAndPassword(email, password)
-  .then(() => window.location.href = "dashboard.html")
-  .catch(e => alert(e.message));
+  .then(() => {
+    window.location.href = "dashboard.html";  // sukses → pindah ke dashboard
+  })
+  .catch(e => {
+    alert("Error: " + e.message);
+  });
 }
 </script>
 
