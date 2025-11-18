@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Royalti</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<style>
+body { background:#0f0f0f; color:white; font-family:Arial; padding:20px; }
+#box { background:#1a1a1a; padding:20px; border-radius:10px; }
+button { width:100%; background:purple; padding:10px; border:none; border-radius:10px; color:white; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<h2>Royalti Kamu</h2>
+<div id="box">Memuat...</div>
+<button onclick="logout()">Logout</button>
+
+<script>
+const firebaseConfig = {
+  apiKey: "GANTI",
+  authDomain: "GANTI.firebaseapp.com",
+  databaseURL: "https://GANTI-default-rtdb.firebaseio.com",
+  projectId: "GANTI",
+  storageBucket: "GANTI.appspot.com",
+  messagingSenderId: "GANTI",
+  appId: "GANTI"
+};
+firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) window.location.href = "index.html";
+
+  firebase.database().ref("royalties/" + user.uid).on("value", snap => {
+    let d = snap.val();
+    if (!d) {
+      document.getElementById("box").innerHTML = "Belum ada data royalti.";
+      return;
+    }
+    document.getElementById("box").innerHTML = `
+      <b>Total:</b> $${d.total} <br><br>
+      <b>Dit tarik:</b> $${d.withdraw} <br><br>
+      <b>Sisa:</b> $${d.total - d.withdraw}
+    `;
+  });
+});
+
+function logout() { firebase.auth().signOut(); }
+</script>
+
+</body>
+</html>
