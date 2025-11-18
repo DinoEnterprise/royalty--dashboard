@@ -5,14 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Royalti</title>
 
+<!-- Firebase JS -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<!-- CSS -->
 <style>
-body { background:#0f0f0f; color:white; font-family:Arial; padding:20px; }
-#box { background:#1a1a1a; padding:20px; border-radius:10px; }
-button { width:100%; background:purple; padding:10px; border:none; border-radius:10px; color:white; margin-top:10px; }
+body {
+  background:#0f0f0f;
+  color:white;
+  font-family:Arial, sans-serif;
+  padding:20px;
+}
+#box {
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:10px;
+  min-height:100px;
+}
+button {
+  width:100%;
+  background:purple;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  color:white;
+  margin-top:10px;
+  cursor:pointer;
+  font-size:16px;
+}
+button:hover {
+  background:#800080;
+}
+h2 {
+  margin-bottom:20px;
+}
 </style>
 </head>
 <body>
@@ -22,42 +50,55 @@ button { width:100%; background:purple; padding:10px; border:none; border-radius
 <button onclick="logout()">Logout</button>
 
 <script>
+// Firebase config
 const firebaseConfig = {
-    apiKey: "AIzaSyBZ_7yMUsfTM-ldDdFal4KU-bLH5QydHwo",
-    authDomain: "royalty-ca9fe.firebaseapp.com",
-    databaseURL: "https://royalty-ca9fe-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "royalty-ca9fe",
-    storageBucket: "royalty-ca9fe.firebasestorage.app",
-    messagingSenderId: "458176607676",
-    appId: "1:458176607676:web:59e789a591b69e6582a7b9"
+  apiKey: "AIzaSyBZ_7yMUsfTM-ldDdFal4KU-bLH5QydHwo",
+  authDomain: "royalty-ca9fe.firebaseapp.com",
+  databaseURL: "https://royalty-ca9fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "royalty-ca9fe",
+  storageBucket: "royalty-ca9fe.appspot.com",
+  messagingSenderId: "458176607676",
+  appId: "1:458176607676:web:59e789a591b69e6582a7b9"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+// Cek login
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
     window.location.href = "index.html";
     return;
   }
 
-  firebase.database().ref("users/" + user.uid).on("value", snap => {
+  // Ambil data user
+  const ref = firebase.database().ref("users/" + user.uid);
+  ref.on("value", snap => {
     let d = snap.val();
-
     if (!d) {
       document.getElementById("box").innerHTML = "Belum ada data user.";
       return;
     }
 
+    // Tampilkan data
     document.getElementById("box").innerHTML = `
-      <b>Nama Artis:</b> ${d.namaArtis} <br><br>
-      <b>Saldo:</b> Rp ${d.saldo.toLocaleString()} <br><br>
-      <b>Total Play:</b> ${d.totalPlay}
+      <b>Nama Artis:</b> ${d.namaArtis || "-"} <br><br>
+      <b>Saldo:</b> Rp ${Number(d.saldo || 0).toLocaleString()} <br><br>
+      <b>Total Play:</b> ${d.totalPlay || 0}
     `;
+  }, err => {
+    document.getElementById("box").innerHTML = "Gagal memuat data.";
+    console.error(err);
   });
 });
 
+// Logout
 function logout() {
-  firebase.auth().signOut();
+  firebase.auth().signOut().then(() => {
+    window.location.href = "index.html";
+  }).catch(err => {
+    alert("Gagal logout: " + err.message);
+  });
 }
 </script>
 
