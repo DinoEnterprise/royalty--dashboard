@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Saldo</title>
+</head>
+<body>
+<h2 id="nama"></h2>
+<h1 id="saldo"></h1>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB9MY2lUOPzzoMUlhu1WHv4a6gwFk9PTsY",
+  authDomain: "dynopay-1c22b.firebaseapp.com",
+  projectId: "dynopay-1c22b"
+};
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+firebase.auth().onAuthStateChanged(user=>{
+ if(!user){
+  window.location.href="index.html";
+ } else {
+  db.collection("users").doc(user.uid).get().then(doc=>{
+    document.getElementById("nama").innerText = doc.data().nama;
+    document.getElementById("saldo").innerText =
+      "Rp " + doc.data().saldo.toLocaleString("id-ID");
+  });
+ }
+});
+</script>
+</body>
+</html>
