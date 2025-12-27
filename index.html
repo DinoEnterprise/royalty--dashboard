@@ -12,39 +12,100 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: #f1f2f7;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   margin: 0;
 }
+
+/* Card */
 .container {
   background: #fff;
-  padding: 30px 25px;
-  border-radius: 16px;
-  box-shadow: 0 8px 18px rgba(0,0,0,.1);
+  padding: 35px 30px;
+  border-radius: 20px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
   width: 90%;
-  max-width: 360px;
+  max-width: 380px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
-h2 { margin-bottom: 20px; color: #111; }
+
+/* Title */
+h2 {
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Inputs */
 input {
   width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  padding: 14px 16px;
+  margin: 10px 0;
+  border-radius: 12px;
+  border: 1px solid #ddd;
   outline: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 6px rgba(102,126,234,0.5);
+}
+
+/* Button */
 button {
   width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border-radius: 10px;
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 12px;
   border: none;
-  background: #2563eb;
+  background: linear-gradient(90deg, #667eea, #764ba2);
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
-button:hover { background: #1e4fc1; }
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(102,126,234,0.4);
+}
+
+/* Error message */
+#error {
+  color: #e53e3e;
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 18px;
+  transition: all 0.3s ease;
+}
+
+/* Extra decoration */
+.container::before {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(102,126,234,0.1);
+  border-radius: 50%;
+  top: -60px;
+  right: -60px;
+  z-index: 0;
+}
+.container::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: rgba(118,75,162,0.1);
+  border-radius: 50%;
+  bottom: -40px;
+  left: -40px;
+  z-index: 0;
+}
+
+.container * { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
@@ -54,7 +115,7 @@ button:hover { background: #1e4fc1; }
   <input id="email" type="email" placeholder="Email">
   <input id="pass" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
-  <p id="error" style="color:red; font-size:13px; margin-top:8px;"></p>
+  <p id="error"></p>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -62,7 +123,6 @@ button:hover { background: #1e4fc1; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// Firebase config
 firebase.initializeApp({
   apiKey: "AIzaSyB9MY2lUOPzzoMUlhu1WHv4a6gwFk9PTsY",
   authDomain: "dynopay-1c22b.firebaseapp.com",
