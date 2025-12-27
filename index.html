@@ -14,19 +14,28 @@
 <button onclick="login()">Login</button>
 
 <script>
-firebase.initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyB9MY2lUOPzzoMUlhu1WHv4a6gwFk9PTsY",
   authDomain: "dynopay-1c22b.firebaseapp.com",
-  databaseURL: "https://dynopay-1c22b-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "dynopay-1c22b"
-});
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 function login(){
- firebase.auth().signInWithEmailAndPassword(
-  email.value, pass.value
- ).then(()=>{
-  location.href="saldo.html";
- });
+  firebase.auth()
+    .signInWithEmailAndPassword(
+      document.getElementById("email").value,
+      document.getElementById("pass").value
+    )
+    .then(()=>{
+      window.location.href="saldo.html";
+    })
+    .catch(err=>{
+      alert(err.message);
+    });
 }
 </script>
 
