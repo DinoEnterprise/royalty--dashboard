@@ -1,37 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Saldo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saldo Royalti</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #f1f2f7;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+}
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.1);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  margin-bottom: 40px;
+}
+.card h2 { margin-bottom: 15px; color: #111; }
+.card h1 { font-size: 32px; color: #2563eb; }
+button.logout {
+  padding: 12px 25px;
+  border-radius: 10px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.logout:hover { background: #c0392b; }
+</style>
 </head>
 <body>
-<h2 id="nama"></h2>
-<h1 id="saldo"></h1>
+
+<div class="card">
+  <h2 id="nama">Loading...</h2>
+  <h1 id="saldo">Rp 0</h1>
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBRSkmZXbTPNupefSmjXvlKLDNsaeQ2zag",
-  authDomain: "dynopay-2513c.firebaseapp.com",
-  projectId: "dynopay-2513c",
-};
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-
-firebase.auth().onAuthStateChanged(user=>{
- if(!user){
-  window.location.href="index.html";
- } else {
-  db.collection("users").doc(user.uid).get().then(doc=>{
-    document.getElementById("nama").innerText = doc.data().nama;
-    document.getElementById("saldo").innerText =
-      "Rp " + doc.data().saldo.toLocaleString("id-ID");
-  });
- }
+firebase.initializeApp({
+  apiKey: "AIzaSyB9MY2lUOPzzoMUlhu1WHv4a6gwFk9PTsY",
+  authDomain: "dynopay-1c22b.firebaseapp.com",
+  databaseURL: "https://dynopay-1c22b-default-rtdb.asia-southeast1.firebasedatabase.app"
 });
+
+const db = firebase.database();
+
+firebase.auth().onAuthStateChanged(user => {
+  if(!user){
+    window.location.href = "login.html";
+  } else {
+    db.ref('users/' + user.uid).once('value')
+      .then(snapshot => {
+        if(snapshot.exists()){
+          const data = snapshot.val();
+          document.getElementById("nama").innerText = data.nama;
+          document.getElementById("saldo").innerText = "Rp " + Number(data.saldo).toLocaleString("id-ID");
+        } else {
+          document.getElementById("nama").innerText = "User tidak ditemukan";
+        }
+      });
+  }
+});
+
+function logout(){
+  firebase.auth().signOut().then(()=>{ window.location.href="login.html"; });
+}
 </script>
+
 </body>
 </html>
